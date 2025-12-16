@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>MiPanel PRO — Finanzas</title>
+
+  <!-- Google Fonts: Inter & Outfit -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@500;700&display=swap"
+    rel="stylesheet">
+
+  <!-- Remix Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <div class="logo">
+        <i class="ri-dashboard-3-line"></i>
+        <span>MiPanel <span class="badge-pro">PRO</span></span>
+      </div>
+      <button id="sidebarClose" class="icon-btn mobile-only"><i class="ri-close-line"></i></button>
+    </div>
+
+    <nav class="sidebar-nav">
+      <ul>
+        <li><a href="#" class="active" data-page="dashboard"><i class="ri-home-4-line"></i> <span>Dashboard</span></a>
+        </li>
+        <li><a href="#" data-page="movimientos"><i class="ri-exchange-dollar-line"></i> <span>Movimientos</span></a>
+        </li>
+        <li><a href="#" data-page="cuentas"><i class="ri-bank-card-line"></i> <span>Mis Cuentas</span></a></li>
+        <li><a href="#" data-page="reportes"><i class="ri-pie-chart-2-line"></i> <span>Reportes</span></a></li>
+        <li class="divider"></li>
+        <li><a href="#" data-page="config"><i class="ri-settings-4-line"></i> <span>Configuración</span></a></li>
+        <li><a href="#" data-page="ayuda"><i class="ri-question-line"></i> <span>Ayuda</span></a></li>
+      </ul>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="user-mini">
+        <div class="avatar">G</div>
+        <div class="info">
+          <div class="name">Gabo</div>
+          <div class="role">Admin</div>
+        </div>
+      </div>
+      <button id="logoutBtn" class="icon-btn" title="Salir"><i class="ri-logout-box-r-line"></i></button>
+    </div>
+  </aside>
+
+  <!-- MAIN LAYOUT -->
+  <div class="main-content">
+
+    <!-- TOPBAR -->
+    <header class="topbar">
+      <div class="left">
+        <button id="sidebarToggle" class="icon-btn"><i class="ri-menu-2-line"></i></button>
+        <h2 id="pageTitle">Resumen</h2>
+      </div>
+
+      <div class="right">
+        <div class="search-box">
+          <i class="ri-search-line"></i>
+          <input type="text" placeholder="Buscar..." />
+        </div>
+
+        <div class="actions">
+          <button class="icon-btn relative" id="notifBtn">
+            <i class="ri-notification-3-line"></i>
+            <span class="dot" id="notifDot"></span>
+          </button>
+
+          <button class="theme-btn" id="themeToggle">
+            <i class="ri-moon-line"></i>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- CONTENT PAGES -->
+    <div class="scroll-area">
+
+      <!-- 1. DASHBOARD -->
+      <section id="dashboard" class="page active">
+        <div class="welcome-banner">
+          <div>
+            <h1>Hola, Gabo 👋</h1>
+            <p>Aquí tienes el resumen de tus finanzas hoy.</p>
+          </div>
+          <button class="btn-primary" onclick="showPage('movimientos')">
+            <i class="ri-add-line"></i> Nueva Transacción
+          </button>
+        </div>
+
+        <!-- KPI TILES -->
+        <div class="kpi-grid">
+          <div class="card kpi">
+            <div class="icon-box blue"><i class="ri-wallet-3-line"></i></div>
+            <div class="kpi-info">
+              <span class="label">Saldo Total</span>
+              <div class="value">$ 14,250.00</div>
+              <span class="trend up"><i class="ri-arrow-up-line"></i> +12% mes</span>
+            </div>
+          </div>
+          <div class="card kpi">
+            <div class="icon-box green"><i class="ri-arrow-down-circle-line"></i></div>
+            <div class="kpi-info">
+              <span class="label">Ingresos</span>
+              <div class="value">$ 4,120.50</div>
+              <span class="trend up"><i class="ri-arrow-up-line"></i> +5%</span>
+            </div>
+          </div>
+          <div class="card kpi">
+            <div class="icon-box red"><i class="ri-arrow-up-circle-line"></i></div>
+            <div class="kpi-info">
+              <span class="label">Gastos</span>
+              <div class="value">$ 1,850.00</div>
+              <span class="trend down"><i class="ri-arrow-down-line"></i> -2%</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- CHARTS SECTION -->
+        <div class="charts-row">
+          <div class="card chart-card main-chart">
+            <div class="card-header">
+              <h3>Actividad Financiera</h3>
+              <select class="small-select">
+                <option>Últimos 7 días</option>
+                <option>Esta mes</option>
+              </select>
+            </div>
+            <div class="chart-container">
+              <canvas id="mainChart"></canvas>
+            </div>
+          </div>
+
+          <div class="card chart-card side-chart">
+            <div class="card-header">
+              <h3>Gastos por Categoría</h3>
+            </div>
+            <div class="chart-container donut-container">
+              <canvas id="donutChart"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- RECENT TRANSACTIONS -->
+        <div class="card table-card">
+          <div class="card-header">
+            <h3>Movimientos Recientes</h3>
+            <button class="btn-text" onclick="showPage('movimientos')">Ver todo</button>
+          </div>
+          <div class="table-responsive">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Transacción</th>
+                  <th>Categoría</th>
+                  <th>Fecha</th>
+                  <th>Monto</th>
+                  <th>Estado</th>
+                </tr>
+              </thead>
+              <tbody id="dashboardTableBody">
+                <!-- JS fill -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- 2. MOVIMIENTOS -->
+      <section id="movimientos" class="page hidden">
+        <div class="page-header">
+          <div>
+            <h1>Historial de Movimientos</h1>
+            <p>Gestiona y filtra todas tus transacciones.</p>
+          </div>
+          <div class="filters">
+            <input type="text" id="movSearch" placeholder="Buscar concepto..." />
+            <select id="movFilter">
+              <option value="all">Todos</option>
+              <option value="income">Ingresos</option>
+              <option value="expense">Gastos</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="table-responsive">
+            <table class="table hover">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Concepto</th>
+                  <th>Categoría</th>
+                  <th>Cuenta</th>
+                  <th>Fecha</th>
+                  <th class="text-right">Monto</th>
+                  <th>Estado</th>
+                </tr>
+              </thead>
+              <tbody id="movimientosFullBody">
+                <!-- JS Fill -->
+              </tbody>
+            </table>
+          </div>
+          <div class="pagination">
+            <button class="btn-small" disabled>Anterior</button>
+            <span class="page-num">Página 1 de 3</span>
+            <button class="btn-small">Siguiente</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- 3. CUENTAS (CARDS) -->
+      <section id="cuentas" class="page hidden">
+        <div class="page-header">
+          <h1>Mis Cuentas</h1>
+          <button class="btn-primary"><i class="ri-add-line"></i> Agregar Cuenta</button>
+        </div>
+
+        <div class="accounts-grid" id="accountsGrid">
+          <!-- JS Fill Cards -->
+        </div>
+      </section>
+
+      <!-- 4. REPORTES -->
+      <section id="reportes" class="page hidden">
+        <div class="page-header">
+          <h1>Reportes Mensuales</h1>
+        </div>
+        <div class="reports-layout">
+          <div class="card">
+            <div class="card-header">
+              <h3>Balance Anual</h3>
+            </div>
+            <div class="chart-container large"><canvas id="yearChart"></canvas></div>
+          </div>
+          <div class="metrics-col">
+            <div class="card metric">
+              <h3>Ahorro Promedio</h3>
+              <div class="big-num text-success">+ $1,200</div>
+              <p class="desc">Mejor que el mes pasado</p>
+            </div>
+            <div class="card metric">
+              <h3>Gasto hormiga</h3>
+              <div class="big-num text-danger">- $450</div>
+              <p class="desc">Suscripciones y café</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+
+      <!-- 5. CONFIGURACION -->
+      <section id="config" class="page hidden">
+        <div class="page-header">
+          <h1>Configuración</h1>
+        </div>
+        <div class="config-container">
+          <div class="card config-card">
+            <h3>Perfil</h3>
+            <div class="form-group">
+              <label>Nombre de usuario</label>
+              <input type="text" value="Gabo" />
+            </div>
+            <div class="form-group">
+              <label>Correo electrónico</label>
+              <input type="email" value="gabo@ejemplo.com" />
+            </div>
+            <button class="btn-primary">Guardar Cambios</button>
+          </div>
+
+          <div class="card config-card">
+            <h3>Preferencias</h3>
+            <div class="switch-row">
+              <span>Modo Oscuro</span>
+              <label class="switch">
+                <input type="checkbox" id="darkModeSwitch" checked>
+                <span class="slider round"></span>
+              </label>
+            </div>
+            <div class="switch-row">
+              <span>Notificaciones por correo</span>
+              <label class="switch">
+                <input type="checkbox" checked>
+                <span class="slider round"></span>
+              </label>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 6. AYUDA -->
+      <section id="ayuda" class="page hidden">
+        <div class="page-header">
+          <h1>Centro de Ayuda</h1>
+        </div>
+        <div class="faq-list" id="faqList">
+          <!-- JS Fill -->
+        </div>
+      </section>
+
+    </div>
+  </div>
+
+  <!-- TOAST NOTIFICATION CONTAINER -->
+  <div id="toastContainer" class="toast-container"></div>
+
+  <script src="script.js"></script>
+</body>
+
+</html>
